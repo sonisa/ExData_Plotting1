@@ -1,0 +1,23 @@
+## Construct the plot and save it to a PNG file with a width of 480 pixels and a height
+# of 480 pixels.
+dataFile <- "household_power_consumption.txt"
+data <- read.table(dataFile, header=TRUE, sep=";", stringsAsFactors=FALSE)
+subSetData <- subset(data,data$Date=="1/2/2007" | data$Date =="2/2/2007")
+datetime <- strptime(paste(subSetData$Date, subSetData$Time, sep=" "), "%d/%m/%Y %H:%M:%S") 
+Globalactivepower <- as.numeric(subSetData$Global_active_power)
+globalReactivePower <- as.numeric(subSetData$Global_reactive_power)
+voltage <- as.numeric(subSetData$Voltage)
+subMetering1 <- as.numeric(subSetData$Sub_metering_1)
+subMetering2 <- as.numeric(subSetData$Sub_metering_2)
+subMetering3 <- as.numeric(subSetData$Sub_metering_3)
+png("plot4.png", width=480, height=480)
+par(mfrow = c(2, 2)) 
+plot(datetime,Global_active_power, type="l", xlab="", ylab="Global Active Power")
+plot(datetime,voltage, type="l", xlab="datetime", ylab="Voltage")
+plot(datetime,subMetering1, type="l",ylab="Energy sub metering",xlab ="")
+with(subSetData,lines(datetime,as.numeric(as.character(Sub_metering_1))))
+with(subSetData,lines(datetime,as.numeric(as.character(Sub_metering_2)),col="red"))
+with(subSetData,lines(datetime,as.numeric(as.character(Sub_metering_3)),col="blue"))
+legend("topright", lty=1, col=c("black","red","blue"),legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),cex = 0.5)
+plot(datetime,globalReactivePower, type="l", xlab="datetime", ylab="Global_Reactive_Power")
+dev.off()
